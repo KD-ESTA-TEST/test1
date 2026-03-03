@@ -1,0 +1,40 @@
+{
+  "$schema": "https://esta-resources.sbb-cloud.net/tekton-schema.json",
+  "productName": "docker-tekton-test",
+  "docker": {
+    "artifactoryDockerRepo": "example.docker",
+    "dockerFile": "Dockerfile"
+  },
+  "pipelines": [
+    {
+      "name": "continuous",
+      "triggerType": [
+        "USER",
+        "GITEVENT"
+      ],
+      "branchNamePrefixes": [
+        "feature"
+      ],
+      "build": {
+        "buildDockerImage": true,
+        "deployDockerImage": false
+      }
+    },
+    {
+      "name": "release",
+      "build": {
+        "buildDockerImage": true,
+        "deployDockerImage": true,
+        "additionalDockerImageTags": [
+          "latest"
+        ]
+      },
+      "triggerType": [
+        "GITEVENT"
+      ],
+      "versionTagEventPatterns": [
+        "^(\\d+\\.)(\\d+\\.)(\\d+)"
+      ]
+    }
+  ]
+}
